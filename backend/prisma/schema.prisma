@@ -1,0 +1,99 @@
+// Prisma schema for the Product Drop system.
+//
+// Tables:
+//   - User          : registered customers
+//   - Product       : sellable items with finite stock
+//   - Reservation   : 5-minute holds against stock
+//   - Order         : finalized purchases
+//   - InventoryLog  : audit trail for every stock change
+//
+// Concurrency note:
+//   Product.stock is the single source of truth and is mutated only inside
+//   a transaction that has locked the product row with SELECT ... FOR UPDATE
+//   (see services/reservationService.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ReservationStatus {
+  PENDING
+  COMPLETED
+  EXPIRED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  orders       Order[]
+  reservations Reservation[]
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  name         String
+  description  String
+  price        Decimal  @db.Decimal(10, 2)
+  stock        Int
+  /// Snapshot of stock at seed/release time. Never mutated by reserve/expire,
+  /// so the UI can render an accurate "sold / total" ratio even when a fresh
+  /// client lands after a depletion event.
+  initialStock Int      @default(0)
+  imageUrl     String   @default("https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1400&q=80")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reservations  Reservation[]
+  inventoryLogs InventoryLog[]
+
+  @@index([stock])
+}
+
+model Reservation {
+  id        String            @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  status    ReservationStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order   Order?
+
+  @@index([status, expiresAt])
+  @@index([userId])
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  userId        String
+  reservationId String   @unique
+  totalAmount   Decimal  @db.Decimal(10, 2)
+  createdAt     DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+}
+
+model InventoryLog {
+  id           String   @id @default(cuid())
+  productId    String
+  changeAmount Int      // negative = decrement, positive = restock
+  reason       String   // RESERVE | CHECKOUT | EXPIRE_RESTOCK | SEED | MANUAL
+  createdAt    DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, createdAt])
+}
