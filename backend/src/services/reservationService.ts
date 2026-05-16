@@ -7,21 +7,6 @@ import { logger } from '../lib/logger';
 
 type LockedProduct = { id: string; stock: number; price: Prisma.Decimal };
 
-/**
- * Pessimistic-lock based reservation creation.
- *
- * Race-condition strategy:
- *   1. Open a Serializable transaction.
- *   2. Acquire a row-level lock on the target Product with SELECT ... FOR UPDATE.
- *      Any concurrent transaction touching the same row will block until commit.
- *   3. Read stock, validate, decrement stock, write Reservation + InventoryLog.
- *
- * Why this prevents overselling:
- *   The classic TOCTOU window between "check stock" and "decrement stock"
- *   is closed because no other transaction can read-then-decrement the same
- *   Product row while we hold the lock. The decrement is atomic w.r.t. the
- *   check we just performed.
- */
 export async function createReservation(args: {
   userId: string;
   productId: string;
@@ -41,10 +26,10 @@ export async function createReservation(args: {
         const product = rows[0];
         if (!product) throw NotFound('Product not found');
 
-        // ── Duplicate guard ──────────────────────────────────────────────────
-        // Prevent the same user from holding multiple PENDING reservations for
-        // the same product at the same time. Checked inside the transaction so
-        // two concurrent requests cannot both slip through.
+        
+        
+        
+        
         const existing = await tx.reservation.findFirst({
           where: { userId, productId, status: 'PENDING' },
           select: { id: true, expiresAt: true },
@@ -57,7 +42,7 @@ export async function createReservation(args: {
             { reservationId: existing.id, expiresAt: existing.expiresAt },
           );
         }
-        // ────────────────────────────────────────────────────────────────────
+        
 
         if (product.stock < quantity) {
           inc('oversell_attempts_blocked');
@@ -87,11 +72,6 @@ export async function createReservation(args: {
 }
 
 
-/**
- * Convert a PENDING reservation into a COMPLETED one and create an Order.
- * Validates ownership and TTL inside the transaction so two parallel
- * checkouts of the same reservation cannot both succeed.
- */
 export async function checkoutReservation(args: {
   userId: string;
   reservationId: string;

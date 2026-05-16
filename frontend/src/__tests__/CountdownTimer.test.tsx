@@ -1,9 +1,3 @@
-/**
- * Tests for CountdownTimer component
- *
- * Uses vi.useFakeTimers() to control the passage of time
- * without waiting for real seconds to elapse.
- */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { CountdownTimer } from '../components/CountdownTimer';
@@ -23,7 +17,7 @@ describe('CountdownTimer', () => {
 
   it('renders remaining time in MM : SS format', () => {
     render(<CountdownTimer expiresAt={expiresInMs(5 * 60_000)} />);
-    // Component uses aria-live="polite" on the timer element
+    
     const el = document.querySelector('[aria-live="polite"]');
     expect(el).toBeTruthy();
     expect(el?.textContent).toMatch(/\d{2}\s*:\s*\d{2}/);
@@ -31,7 +25,7 @@ describe('CountdownTimer', () => {
 
   it('shows hours when remaining time exceeds 1 hour', () => {
     render(<CountdownTimer expiresAt={expiresInMs(90 * 60_000)} />);
-    // Should contain HH : MM : SS
+    
     const el = document.querySelector('[aria-live="polite"]');
     expect(el?.textContent).toMatch(/\d{2}\s*:\s*\d{2}\s*:\s*\d{2}/);
   });
@@ -39,7 +33,7 @@ describe('CountdownTimer', () => {
   it('hides hours when remaining time is under 1 hour', () => {
     render(<CountdownTimer expiresAt={expiresInMs(5 * 60_000)} />);
     const el = document.querySelector('[aria-live="polite"]');
-    // Should only have MM : SS (no third segment)
+    
     const colons = (el?.textContent?.match(/:/g) ?? []).length;
     expect(colons).toBe(1);
   });
@@ -50,7 +44,7 @@ describe('CountdownTimer', () => {
 
     expect(onExpire).not.toHaveBeenCalled();
 
-    // Advance past the expiry point (timer ticks every 200ms)
+    
     act(() => { vi.advanceTimersByTime(1000); });
 
     expect(onExpire).toHaveBeenCalledTimes(1);

@@ -1,13 +1,6 @@
-/**
- * Unit tests for reservationService.ts
- *
- * Strategy: mock prisma + env so tests run without a real DB.
- * The $transaction mock calls the callback synchronously with a
- * mock tx object, letting us assert every DB call in isolation.
- */
 import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 
-// ── Mocks (hoisted before imports) ──────────────────────────────────────────
+
 
 vi.mock('../lib/prisma', () => ({
   prisma: {
@@ -30,7 +23,7 @@ vi.mock('../config/env', () => ({
   env: { RESERVATION_TTL_MINUTES: 5 },
 }));
 
-// Mock @prisma/client so Prisma.sql and Prisma.Decimal are available
+
 vi.mock('@prisma/client', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@prisma/client')>();
   return {
@@ -43,18 +36,17 @@ vi.mock('@prisma/client', async (importOriginal) => {
   };
 });
 
-// ── Imports (after mocks) ────────────────────────────────────────────────────
+
 
 import { prisma } from '../lib/prisma';
 import { createReservation, checkoutReservation } from '../services/reservationService';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+
 
 const PRODUCT_ID  = 'prod-1';
 const USER_ID     = 'user-1';
 const RESERVATION_ID = 'res-1';
 
-/** Build a mock transaction object with sensible defaults */
 function buildMockTx(overrides: {
   product?: { id: string; stock: number; price: { mul: (n: number) => unknown } } | null;
   existingReservation?: { id: string; expiresAt: Date } | null;
@@ -83,14 +75,13 @@ function buildMockTx(overrides: {
   };
 }
 
-/** Make prisma.$transaction call its callback with the given mock tx */
 function setupTransaction(tx: ReturnType<typeof buildMockTx>) {
   (prisma.$transaction as unknown as MockInstance).mockImplementation(
     async (fn: (t: typeof tx) => unknown) => fn(tx),
   );
 }
 
-// ── createReservation ────────────────────────────────────────────────────────
+
 
 describe('createReservation', () => {
   beforeEach(() => vi.clearAllMocks());
@@ -143,14 +134,14 @@ describe('createReservation', () => {
       .catch((e) => e);
 
     expect(err).toMatchObject({ code: 'DUPLICATE_RESERVATION' });
-    // Must include the existing reservationId in details so the frontend can restore state
+    
     expect(err.details?.reservationId).toBe(RESERVATION_ID);
-    // Must NOT decrement stock
+    
     expect(tx.product.update).not.toHaveBeenCalled();
   });
 });
 
-// ── checkoutReservation ──────────────────────────────────────────────────────
+
 
 describe('checkoutReservation', () => {
   const futureExpiry = new Date(Date.now() + 60_000);

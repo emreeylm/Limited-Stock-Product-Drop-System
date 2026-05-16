@@ -4,12 +4,12 @@ import { env } from '../config/env';
 import { Unauthorized } from '../lib/errors';
 
 export interface AuthPayload {
-  sub: string;   // user id
+  sub: string;   
   email: string;
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  
   namespace Express {
     interface Request {
       user?: AuthPayload;

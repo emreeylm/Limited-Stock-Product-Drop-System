@@ -4,20 +4,15 @@ import type { AuthUser } from '../types';
 
 interface Props {
   open: boolean;
-  /** Pre-select tab when opened. AuthForm controls its own state after. */
-  initialMode?: 'login' | 'register';
+    initialMode?: 'login' | 'register';
   onClose: () => void;
   onAuthed: (user: AuthUser) => void;
   onError: (msg: string) => void;
 }
 
-/**
- * Modal popup wrapper around AuthForm. Backdrop click + ESC closes.
- * Body scroll is locked while open.
- */
 export function AuthModal({ open, initialMode = 'login', onClose, onAuthed, onError }: Props) {
-  // Remount AuthForm when modal opens with a different initialMode so the
-  // tab selection reflects the caller's intent (login vs register).
+  
+  
   const [mountKey, setMountKey] = useState(0);
   useEffect(() => {
     if (open) setMountKey((k) => k + 1);
@@ -48,7 +43,7 @@ export function AuthModal({ open, initialMode = 'login', onClose, onAuthed, onEr
         className="relative w-full max-w-sm slide-up"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {/* Header strip */}
+        {}
         <div className="flex items-center justify-between border border-line border-b-0 bg-surface px-4 py-2">
           <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wide2 text-muted">
             <span className="inline-block w-1.5 h-1.5 bg-yellow dot-pulse" />

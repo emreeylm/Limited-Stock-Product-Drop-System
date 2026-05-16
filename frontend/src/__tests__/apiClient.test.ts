@@ -1,11 +1,7 @@
-/**
- * Tests for the frontend API client — HttpError class and error handling paths.
- * fetch is mocked via vi.stubGlobal so no real network calls are made.
- */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { HttpError, tokenStorage } from '../api/client';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+
 
 function mockFetch(status: number, body: unknown, { delay = 0 } = {}) {
   vi.stubGlobal('fetch', vi.fn().mockImplementation(async () => {
@@ -18,7 +14,7 @@ function mockFetch(status: number, body: unknown, { delay = 0 } = {}) {
   }));
 }
 
-// ── HttpError ─────────────────────────────────────────────────────────────────
+
 
 describe('HttpError', () => {
   it('exposes status, code, and message from the API error body', () => {
@@ -44,7 +40,7 @@ describe('HttpError', () => {
   });
 });
 
-// ── tokenStorage ──────────────────────────────────────────────────────────────
+
 
 describe('tokenStorage', () => {
   afterEach(() => tokenStorage.clear());
@@ -61,7 +57,7 @@ describe('tokenStorage', () => {
   });
 });
 
-// ── api.products() ────────────────────────────────────────────────────────────
+
 
 describe('api.products()', () => {
   afterEach(() => vi.unstubAllGlobals());
@@ -98,17 +94,17 @@ describe('api.products()', () => {
   });
 
   it('throws TIMEOUT HttpError when request exceeds timeoutMs', async () => {
-    // Delay longer than the default 8s timeout — we fake timers to skip the wait
+    
     vi.useFakeTimers();
     vi.stubGlobal('fetch', vi.fn().mockImplementation(async (_url: string, { signal }: { signal: AbortSignal }) => {
-      // Wait until the signal is aborted
+      
       await new Promise((_res, rej) => signal.addEventListener('abort', () => rej(Object.assign(new Error('aborted'), { name: 'AbortError' }))));
     }));
 
     const { api } = await import('../api/client');
     const request = api.products();
 
-    // Advance past the 8s timeout
+    
     vi.advanceTimersByTime(9000);
 
     const err = await request.catch((e) => e);

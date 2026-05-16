@@ -18,7 +18,7 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '64kb' }));
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 
-// Morgan piped into Winston for structured logs.
+
 const morganFormat =
   ':remote-addr :method :url :status :res[content-length] - :response-time ms';
 app.use(morgan(morganFormat, { stream: httpLogStream }));
@@ -28,7 +28,7 @@ app.use((req, _res, next) => {
   next();
 });
 
-// Global baseline limiter — protects against accidental floods.
+
 app.use(rateLimit({
   windowMs: 60_000,
   max: 300,
@@ -42,7 +42,7 @@ app.use('/auth',         authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/products',     productRoutes);
 
-app.use('/api',          reservationRoutes); // /reserve and /checkout
+app.use('/api',          reservationRoutes); 
 app.use('/',             reservationRoutes);
 
 app.use('/api/metrics',  metricsRoutes);

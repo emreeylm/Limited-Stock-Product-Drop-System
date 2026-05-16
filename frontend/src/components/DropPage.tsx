@@ -26,20 +26,20 @@ export function DropPage({
   const [reserving, setReserving]     = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
 
-  // Hydrate from local cache when we know the user and product.
-  // Backend remains authoritative — cache is silently invalidated on TTL,
-  // and any stale id will fail checkout with 410/404 (handled below).
+  
+  
+  
   useEffect(() => {
     if (!user) { setReservation(null); return; }
     const cached = reservationStorage.get(user.id, productId);
     setReservation(cached);
   }, [user, productId]);
 
-  // Meter total comes straight from the server snapshot — accurate regardless
-  // of when the client arrives in the drop's lifecycle.
+  
+  
   const total = product?.initialStock ?? 0;
 
-  // Quantity selector (1..min(10, stock)). Reset to 1 when product changes.
+  
   const [quantity, setQuantity] = useState(1);
   useEffect(() => { setQuantity(1); }, [productId]);
   const maxQuantity = Math.min(10, Math.max(1, product?.stock ?? 1));
@@ -91,7 +91,7 @@ export function DropPage({
       setReservation(null);
       pushToast('success', `Order ${res.order.id.slice(0, 6)}. Locked in.`);
     } catch (err) {
-      // 410 GONE or 404 NOT_FOUND => stale cached reservation; drop it so the UI recovers.
+      
       if (err instanceof HttpError && (err.status === 410 || err.status === 404)) {
         reservationStorage.clear(user.id, reservation.productId);
         setReservation(null);
@@ -120,7 +120,7 @@ export function DropPage({
   return (
     <div className="min-h-screen bg-ink text-white">
       <div className="pt-9 min-h-screen flex">
-        {/* LEFT 55% */}
+        {}
         <section className="relative hidden md:block w-[55%] border-r border-line overflow-hidden">
           <div className="absolute inset-0 reveal" style={{ animationDelay: '0ms' }}>
             <ProductCanvas name={product?.name ?? ''} imageUrl={product?.imageUrl} />
@@ -129,7 +129,7 @@ export function DropPage({
           <div className="pointer-events-none absolute inset-0 noise" />
 
           <div className="absolute left-4 top-12 font-mono text-[10px] uppercase tracking-wide2 text-yellow reveal" style={{ animationDelay: '80ms' }}>
-            // Unit 01
+            
           </div>
           <div className="absolute left-4 bottom-4 font-mono text-[10px] uppercase tracking-wide2 text-muted reveal" style={{ animationDelay: '160ms' }}>
             {lastUpdated && `Sync ${lastUpdated.toLocaleTimeString('en-GB')}`}
@@ -139,7 +139,7 @@ export function DropPage({
           </div>
         </section>
 
-        {/* RIGHT 45% */}
+        {}
         <section className="w-full md:w-[45%] p-6 md:p-10 flex flex-col gap-6">
           {state.status === 'loading' && !product && (
             <div className="font-mono text-xs text-muted uppercase tracking-wide2 reveal">
@@ -191,7 +191,7 @@ export function DropPage({
 
               <div className="reveal mt-6" style={{ animationDelay: '200ms' }}>
                 <div className="mb-2 flex justify-between items-end">
-                  <h4 className="font-mono text-[10px] uppercase tracking-wide2 text-yellow">// inventory status</h4>
+                  <h4 className="font-mono text-[10px] uppercase tracking-wide2 text-yellow">
                 </div>
                 <StockMeter remaining={product.stock} total={total} />
               </div>
@@ -257,7 +257,7 @@ export function DropPage({
   );
 }
 
-// Local fallback image for the product if not provided by backend.
+
 const PRODUCT_IMAGE_URL = '/product-image.png';
 
 function ProductCanvas({ name, imageUrl }: { name: string; imageUrl?: string }) {
@@ -266,7 +266,7 @@ function ProductCanvas({ name, imageUrl }: { name: string; imageUrl?: string }) 
 
   return (
     <div className="absolute inset-0 bg-ink flex items-center justify-center overflow-hidden">
-      {/* Crosshair guides */}
+      {}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-line" />
         <div className="absolute top-1/2 left-0 right-0 h-px bg-line" />
@@ -277,7 +277,7 @@ function ProductCanvas({ name, imageUrl }: { name: string; imageUrl?: string }) 
       </div>
 
       {imgFailed ? (
-        // Fallback when the image can't be reached — keeps the page intact.
+        
         <div className="relative">
           <div
             className="font-head text-white/90 select-none"
@@ -299,13 +299,13 @@ function ProductCanvas({ name, imageUrl }: { name: string; imageUrl?: string }) 
           className="relative max-w-[78%] max-h-[78%] object-contain select-none pointer-events-none"
           draggable={false}
           style={{
-            // Soft yellow glow tying the subject to the brand colour
+            
             boxShadow: '0 0 120px 0 rgba(232,255,0,0.08)',
           }}
         />
       )}
 
-      {/* Caption pinned to bottom */}
+      {}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-wide2 text-muted whitespace-nowrap">
         Scarcity is the product.
       </div>

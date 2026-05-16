@@ -17,7 +17,7 @@ router.get('/', validate(ProductQuery, 'query'), async (req, res, next) => {
     const { page, limit, sortBy, order, minStock, minPrice, maxPrice, search } =
       req.query as unknown as import('../schemas').ProductQuery;
 
-    // Build where clause
+    
     const where: Prisma.ProductWhereInput = {};
     if (minStock !== undefined) where.stock    = { gte: minStock };
     if (minPrice !== undefined || maxPrice !== undefined) {

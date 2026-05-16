@@ -6,10 +6,6 @@ interface Props {
   segments?: number;
 }
 
-/**
- * 20-block segmented stock meter. Depletes right-to-left.
- * Numeric counter uses an "odometer flip" animation on change.
- */
 export function StockMeter({ remaining, total, segments = 20 }: Props) {
   const ratio = total > 0 ? Math.max(0, Math.min(1, remaining / total)) : 0;
   const lit = Math.ceil(ratio * segments);
@@ -29,8 +25,8 @@ export function StockMeter({ remaining, total, segments = 20 }: Props) {
     <div className="space-y-2">
       <div className="flex gap-[3px]" aria-label="Stock meter">
         {Array.from({ length: segments }).map((_, i) => {
-          // Right-to-left fill: rightmost segments empty first → block at index i
-          // is lit if (segments - i) <= lit
+          
+          
           const filled = segments - i <= lit;
           return (
             <span

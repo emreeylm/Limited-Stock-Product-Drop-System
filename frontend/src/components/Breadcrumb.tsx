@@ -7,10 +7,6 @@ interface Props {
   crumbs: Crumb[];
 }
 
-/**
- * Terminal-style breadcrumb: `>_ /home / catalogue / drop-abc123_`
- * Last crumb is unclickable and gets a blinking caret.
- */
 export function Breadcrumb({ crumbs }: Props) {
   return (
     <nav className="font-mono text-[11px] uppercase tracking-wide2 flex flex-wrap items-center gap-1.5">

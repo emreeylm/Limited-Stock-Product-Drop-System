@@ -75,7 +75,7 @@ function Body({ state, user, onBack, onOpenDrop, onRequireAuth, pushToast }: {
         <span className="bracket bracket-tr" />
         <span className="bracket bracket-bl" />
         <span className="bracket bracket-br" />
-        <div className="font-mono text-[10px] uppercase tracking-wide2 text-muted mb-3">// no session</div>
+        <div className="font-mono text-[10px] uppercase tracking-wide2 text-muted mb-3">
         <div className="font-head text-3xl uppercase text-white mb-2">Sign in first.</div>
         <p className="font-mono text-[11px] uppercase tracking-wide2 text-muted mb-6">
           Reservations live behind your account.
@@ -115,7 +115,7 @@ function Body({ state, user, onBack, onOpenDrop, onRequireAuth, pushToast }: {
         <span className="bracket bracket-tr" />
         <span className="bracket bracket-bl" />
         <span className="bracket bracket-br" />
-        <div className="font-mono text-[10px] uppercase tracking-wide2 text-muted mb-3">// empty</div>
+        <div className="font-mono text-[10px] uppercase tracking-wide2 text-muted mb-3">
         <div className="font-head text-3xl uppercase text-white mb-2">No holds.</div>
         <p className="font-mono text-[11px] uppercase tracking-wide2 text-muted mb-6">
           Reserve something before it slips.
@@ -165,9 +165,9 @@ function ReservationRow({ reservation, user, onOpenDrop, pushToast }: {
   pushToast: (kind: 'success' | 'error' | 'info', message: string) => void;
 }) {
   const [checkingOut, setCheckingOut] = useState(false);
-  // Local "expired" flag — flips when CountdownTimer hits 0 so we hide the
-  // checkout button between expiry and the next /reservations poll that
-  // removes the row entirely.
+  
+  
+  
   const [expired, setExpired] = useState(false);
 
   const initial = reservation.product.name.trim().charAt(0).toUpperCase() || '·';
@@ -194,7 +194,7 @@ function ReservationRow({ reservation, user, onOpenDrop, pushToast }: {
 
   return (
     <article className="relative border border-line bg-surface flex flex-col md:flex-row">
-      {/* Thumb */}
+      {}
       <button
         onClick={() => onOpenDrop()}
         className="relative w-full md:w-32 h-32 md:h-auto md:aspect-square border-b md:border-b-0 md:border-r border-line shrink-0 overflow-hidden flex items-center justify-center group"
@@ -224,7 +224,7 @@ function ReservationRow({ reservation, user, onOpenDrop, pushToast }: {
         <div className="absolute inset-0 noise pointer-events-none" />
       </button>
 
-      {/* Body */}
+      {}
       <div className="flex-1 p-4 flex flex-col md:flex-row md:items-stretch gap-4">
         <div className="flex-1 min-w-0">
           <button
@@ -251,7 +251,7 @@ function ReservationRow({ reservation, user, onOpenDrop, pushToast }: {
           </div>
         </div>
 
-        {/* Right column: countdown + checkout */}
+        {}
         <div className="md:w-64 shrink-0 flex flex-col gap-2">
           {expired ? (
             <div className="border border-bad/40 bg-bad/10 text-bad font-mono text-[11px] uppercase tracking-wide2 px-3 py-2 flex items-center justify-center text-center">

@@ -2,7 +2,7 @@ export interface Product {
   id: string;
   name: string;
   description: string;
-  price: string;       // Decimal serialized as string
+  price: string;       
   stock: number;
   initialStock: number;
   imageUrl: string;

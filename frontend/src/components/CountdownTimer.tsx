@@ -27,7 +27,7 @@ export function CountdownTimer({ expiresAt, onExpire }: Props) {
       const remaining = target - t;
       const sec = Math.floor(remaining / 1000);
 
-      // Shake once per tick when <10s left
+      
       if (sec >= 0 && sec <= 10 && sec !== lastSec.current) {
         lastSec.current = sec;
         setShakeKey((k) => k + 1);

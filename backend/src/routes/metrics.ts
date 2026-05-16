@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/', async (_req, res, next) => {
   try {
-    // Cheap health probe: SELECT 1 + counts.
+    
     const [, productCount, pendingReservations] = await Promise.all([
       prisma.$queryRaw`SELECT 1`,
       prisma.product.count(),

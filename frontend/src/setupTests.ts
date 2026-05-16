@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 
-// jsdom in some vitest versions doesn't fully implement localStorage.
-// Provide a simple in-memory implementation so tokenStorage tests pass.
+
+
 if (typeof localStorage === 'undefined' || typeof localStorage.setItem !== 'function') {
   const store: Record<string, string> = {};
   Object.defineProperty(globalThis, 'localStorage', {

@@ -8,8 +8,8 @@ import { checkoutReservation, createReservation } from '../services/reservationS
 
 const router = Router();
 
-// Anti-abuse: a single user shouldn't be able to spam reservations.
-// Tight window — the protocol expects users to reserve, then checkout.
+
+
 const reserveLimiter = rateLimit({
   windowMs: 60_000,
   max: 30,
@@ -40,9 +40,9 @@ router.post('/checkout', requireAuth, validate(CheckoutBody), async (req, res, n
   } catch (e) { next(e); }
 });
 
-// User's active (PENDING + not yet expired) reservations across all products.
-// Used by the Cart page. Eagerly includes product snapshot so the UI doesn't
-// need a second round-trip per row.
+
+
+
 router.get('/reservations', requireAuth, async (req, res, next) => {
   try {
     const reservations = await prisma.reservation.findMany({

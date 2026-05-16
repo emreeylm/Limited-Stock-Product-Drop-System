@@ -18,7 +18,7 @@ export function StatusBar({
   return (
     <div className="fixed top-0 inset-x-0 z-40 h-9 bg-ink border-b border-line">
       <div className="h-full px-4 flex items-center justify-between font-mono text-[11px] tracking-wide uppercase">
-        {/* Left — drop label */}
+        {}
         <div className="flex items-center gap-2 text-yellow min-w-0">
           <span className="inline-block w-1.5 h-1.5 bg-yellow dot-pulse shrink-0" />
           <span>Drop Live</span>
@@ -26,7 +26,7 @@ export function StatusBar({
           <span className="text-white/70 hidden sm:inline truncate">{dropLabel}</span>
         </div>
 
-        {/* Right — viewers + cart + auth */}
+        {}
         <div className="flex items-center gap-3 min-w-0">
           <div className="hidden md:flex items-center gap-2 text-white/70">
             <span className="inline-block w-1.5 h-1.5 bg-good dot-pulse" />
@@ -35,7 +35,7 @@ export function StatusBar({
 
           <span className="text-line hidden md:inline">|</span>
 
-          {/* Cart */}
+          {}
           {user && (
             <>
               <button

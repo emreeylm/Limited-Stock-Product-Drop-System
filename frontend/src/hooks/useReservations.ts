@@ -8,11 +8,6 @@ export type ReservationsState =
   | { status: 'ready';   reservations: ReservationWithProduct[]; lastUpdated: number }
   | { status: 'error';   reservations: ReservationWithProduct[]; error: string };
 
-/**
- * Polls /api/reservations every `intervalMs` for the signed-in user's
- * active (PENDING + not expired) holds across all products.
- * No-ops when `user` is null. Cart badge + Cart page both consume this.
- */
 export function useReservations(user: AuthUser | null, intervalMs = 5000): ReservationsState {
   const [state, setState] = useState<ReservationsState>(
     user ? { status: 'loading', reservations: [] } : { status: 'idle', reservations: [] },

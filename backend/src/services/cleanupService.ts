@@ -4,17 +4,6 @@ import { logger } from '../lib/logger';
 import { env } from '../config/env';
 import { inc } from '../lib/metrics';
 
-/**
- * Sweep expired PENDING reservations.
- *
- * For each expired reservation we:
- *   - mark it EXPIRED
- *   - restock its quantity onto the Product (row-locked)
- *   - append an InventoryLog row
- *
- * Each reservation is processed in its own short transaction so the sweeper
- * doesn't hold long locks during a large backlog.
- */
 async function expireOne(reservationId: string): Promise<boolean> {
   return prisma.$transaction(
     async (tx) => {
@@ -24,12 +13,12 @@ async function expireOne(reservationId: string): Promise<boolean> {
                    FROM "Reservation" WHERE id = ${reservationId} FOR UPDATE`);
 
       const r = rows[0];
-      // Re-check: another process / a successful checkout may have changed state.
+      
       if (!r) return false;
       if (r.status !== 'PENDING') return false;
       if (r.expiresAt.getTime() > Date.now()) return false;
 
-      // Lock product row before restocking to avoid races with concurrent /reserve.
+      
       await tx.$queryRaw(Prisma.sql`SELECT id FROM "Product" WHERE id = ${r.productId} FOR UPDATE`);
 
       await tx.product.update({
@@ -84,7 +73,7 @@ export function startCleanupScheduler() {
     catch (err) { logger.error('Sweep tick failed', { err: (err as Error).message }); }
   };
   timer = setInterval(tick, intervalMs);
-  // Run an immediate sweep on boot so a crashed/restarted process doesn't leak stock.
+  
   void tick();
   logger.info('Cleanup scheduler started', { intervalMs });
 }

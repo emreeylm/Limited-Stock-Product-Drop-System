@@ -1,11 +1,5 @@
 import type { AuthUser } from '../types';
 
-/**
- * Best-effort decode of a JWT payload without verifying the signature.
- * Verification happens server-side on every authenticated request — the
- * client only needs the payload to render "you are signed in as X".
- * Returns null on any parse failure.
- */
 export function decodeJwt(token: string): AuthUser | null {
   try {
     const parts = token.split('.');

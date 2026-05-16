@@ -24,15 +24,15 @@ const positiveInt = (max: number) =>
   z.coerce.number().int().positive().max(max);
 
 export const ProductQuery = z.object({
-  // Pagination
+  
   page:     z.coerce.number().int().positive().default(1),
   limit:    positiveInt(100).default(20),
 
-  // Sorting
+  
   sortBy:   z.enum(['createdAt', 'price', 'stock', 'name']).default('createdAt'),
   order:    z.enum(['asc', 'desc']).default('asc'),
 
-  // Filtering
+  
   minStock: z.coerce.number().int().min(0).optional(),
   minPrice: z.coerce.number().min(0).optional(),
   maxPrice: z.coerce.number().min(0).optional(),

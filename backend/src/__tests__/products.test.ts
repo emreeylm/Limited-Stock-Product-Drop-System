@@ -1,9 +1,3 @@
-/**
- * Integration tests for /api/products — pagination / filter / sort / search.
- *
- * Strategy: mount the real router on a tiny express app, mock prisma so no DB
- * is needed, and use supertest for HTTP-level assertions.
- */
 import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 import express, { type Express } from 'express';
 import request from 'supertest';
@@ -121,7 +115,7 @@ describe('GET /api/products — filtering', () => {
     await request(buildApp()).get('/api/products?minPrice=20&maxPrice=200');
     const callArg = (FIND_MANY.mock.calls[0]?.[0] ?? {}) as { where?: { price?: unknown } };
     expect(callArg.where?.price).toBeDefined();
-    // Decimal instances; assert numeric serialisation
+    
     expect(JSON.stringify(callArg.where!.price)).toContain('20');
     expect(JSON.stringify(callArg.where!.price)).toContain('200');
   });

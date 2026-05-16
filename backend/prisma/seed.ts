@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Single product for the limited drop system.
-// The frontend fetches the first product with /api/products?limit=1.
+
+
 const PRODUCTS = [
   {
     name: 'Limited Sneaker',

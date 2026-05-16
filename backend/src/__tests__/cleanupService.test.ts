@@ -1,6 +1,3 @@
-/**
- * Unit tests for cleanupService.ts (expiration / restock logic)
- */
 import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 
 vi.mock('../lib/prisma', () => ({
@@ -46,7 +43,7 @@ function buildExpiredRow(overrides: Partial<{
     productId: PRODUCT_ID,
     quantity: 2,
     status: 'PENDING',
-    expiresAt: new Date(Date.now() - 10_000), // 10 seconds ago
+    expiresAt: new Date(Date.now() - 10_000), 
     ...overrides,
   };
 }
@@ -76,13 +73,13 @@ describe('sweepExpired', () => {
     expect(expired).toBe(1);
     expect(inc).toHaveBeenCalledWith('reservations_expired');
 
-    // Should restock the product
+    
     const txProduct = (capturedTx!.product as { update: MockInstance }).update;
     expect(txProduct).toHaveBeenCalledWith(
       expect.objectContaining({ data: { stock: { increment: row.quantity } } }),
     );
 
-    // Should mark the reservation as EXPIRED
+    
     const txRes = (capturedTx!.reservation as { update: MockInstance }).update;
     expect(txRes).toHaveBeenCalledWith(
       expect.objectContaining({ data: { status: 'EXPIRED' } }),
@@ -140,7 +137,7 @@ describe('sweepExpired', () => {
     ]);
 
     (prisma.$transaction as unknown as MockInstance).mockImplementation(async (fn: (tx: unknown) => unknown, _, id?: string) => {
-      // Determine which reservation is being processed by call count
+      
       const callCount = (prisma.$transaction as unknown as MockInstance).mock.calls.length;
       if (callCount === 1) throw new Error('DB error on first');
 
@@ -154,7 +151,7 @@ describe('sweepExpired', () => {
       return fn(mockTx);
     });
 
-    // Should not throw even though first reservation fails
+    
     await expect(sweepExpired()).resolves.toBeDefined();
   });
 });

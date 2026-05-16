@@ -17,7 +17,7 @@ type Page = 'drop' | 'cart';
 export default function App() {
   const [page, setPage] = useState<Page>('drop');
 
-  // Fetch the single product ID on mount
+  
   const [productId, setProductId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
 
@@ -36,18 +36,18 @@ export default function App() {
     return t ? decodeJwt(t) : null;
   });
 
-  // Global auth modal
+  
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({
     open: false, mode: 'login',
   });
   const openAuth  = useCallback((mode: 'login' | 'register') => setAuthModal({ open: true, mode }), []);
   const closeAuth = useCallback(() => setAuthModal((m) => ({ ...m, open: false })), []);
 
-  // Cart badge — live count of user's active reservations
+  
   const reservationsState = useReservations(user, 5000);
   const cartCount = reservationsState.reservations.length;
 
-  // Fake viewer ticker
+  
   const [viewers, setViewers] = useState(847);
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -56,7 +56,7 @@ export default function App() {
     return () => window.clearInterval(id);
   }, []);
 
-  // Toasts
+  
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const pushToast = useCallback((kind: ToastKind, message: string) => {
     setToasts((t) => [...t, { id: Date.now() + Math.random(), kind, message }]);
@@ -65,7 +65,7 @@ export default function App() {
     setToasts((t) => t.filter((x) => x.id !== id));
   }, []);
 
-  // Scroll to top on page change
+  
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }); }, [page]);
 
   const signOut = useCallback(() => {
@@ -92,7 +92,7 @@ export default function App() {
         loadError ? (
           <div className="min-h-screen bg-ink text-white flex items-center justify-center">
             <div className="text-center">
-              <div className="font-mono text-[10px] uppercase tracking-wide2 text-muted mb-3">// error</div>
+              <div className="font-mono text-[10px] uppercase tracking-wide2 text-muted mb-3">
               <div className="font-head text-3xl uppercase mb-2">No product found.</div>
               <p className="font-mono text-[11px] text-muted">Check backend connection.</p>
             </div>
