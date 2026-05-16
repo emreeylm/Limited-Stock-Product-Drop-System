@@ -37,11 +37,19 @@ app.use(rateLimit({
 }));
 
 app.use('/api/auth',     authRoutes);
+app.use('/auth',         authRoutes);
+
 app.use('/api/products', productRoutes);
+app.use('/products',     productRoutes);
+
 app.use('/api',          reservationRoutes); // /reserve and /checkout
+app.use('/',             reservationRoutes);
+
 app.use('/api/metrics',  metricsRoutes);
+app.use('/metrics',      metricsRoutes);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
