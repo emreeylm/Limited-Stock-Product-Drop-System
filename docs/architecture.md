@@ -25,7 +25,12 @@ Tüm sistemin uçtan uca akışı, bileşenleri ve veri yolları.
                    │   HTTPS / JSON / Bearer JWT
                    ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                          API NODE (Express + TS)                         │
+│                  VERCEL EDGE NETWORK (API ROUTING)                       │
+└──────────────────┬───────────────────────────────────────────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    VERCEL NODE / EXPRESS BACKEND                         │
 │                                                                          │
 │  ┌──────────┐  ┌────────────────┐  ┌────────────┐  ┌──────────────────┐  │
 │  │  CORS    │→ │  Rate Limit    │→ │  Morgan    │→ │  Routes          │  │
@@ -63,7 +68,7 @@ Tüm sistemin uçtan uca akışı, bileşenleri ve veri yolları.
               │   prisma client (pool)
               ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                            PostgreSQL                                    │
+│                   NEON MANAGED POSTGRESQL (SERVERLESS)                   │
 │                                                                          │
 │   User ──┐                                                               │
 │          ├─< Reservation >─┐                                             │
